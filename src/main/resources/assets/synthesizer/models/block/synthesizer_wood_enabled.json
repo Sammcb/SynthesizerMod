@@ -1,0 +1,8 @@
+{
+	"parent": "block/cube_bottom_top",
+	"textures": {
+		"top": "${id}:block/synthesizer_top_wood_enabled",
+		"side": "${id}:block/synthesizer_side_wood_enabled",
+		"bottom": "${id}:block/synthesizer_bottom_wood_enabled"
+	}
+}

@@ -1,0 +1,48 @@
+{
+	"schema_version": 1,
+	"quilt_loader": {
+		"group": "${group}",
+		"id": "${id}",
+		"version": "${version}",
+		"metadata": {
+			"name": "Synthesizer",
+			"description": "Matter from sound energy.",
+			"contributors": {
+				"Sammcb": "Owner"
+			},
+			"contact": {
+				"homepage": "https://github.com/Sammcb/SynthesizerMod",
+				"issues": "https://github.com/Sammcb/SynthesizerMod/issues",
+				"sources": "https://github.com/Sammcb/SynthesizerMod"
+			},
+			"icon": "assets/${id}/icon.png"
+		},
+		"intermediate_mappings": "net.fabricmc:intermediary",
+		"entrypoints": {
+			"init": "com.sammcb.${id}.Synthesizer",
+			"client_init": "com.sammcb.${id}.client.SynthesizerClient"
+		},
+		"depends": [
+			{
+				"id": "quilt_loader",
+				"versions": ">=${loaderVersion}"
+			},
+			{
+				"id": "quilted_fabric_api",
+				"versions": ">=${apiVersion}"
+			},
+			{
+				"id": "minecraft",
+				"versions": ">=${minecraftVersion}"
+			},
+			{
+				"id": "java",
+				"versions": ">=${javaVersion}"
+			},
+			{
+				"id": "qkl_core",
+				"versions": ">=0.1.3"
+			}
+		]
+	}
+}

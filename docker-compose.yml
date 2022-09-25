@@ -1,0 +1,11 @@
+version: '3'
+services:
+  java:
+    image: gradle:jdk18
+    command: bash
+    volumes:
+      - .:/code
+    container_name: java
+    working_dir: /code
+    tty: true
+    stdin_open: true

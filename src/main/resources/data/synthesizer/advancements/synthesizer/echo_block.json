@@ -1,0 +1,29 @@
+{
+	"display": {
+		"icon": {
+			"item": "${id}:echo_block"
+		},
+		"title": {
+			"translate": "advancements.synthesizer.echo_block.title"
+		},
+		"description": {
+			"translate": "advancements.synthesizer.echo_block.description"
+		},
+		"frame": "goal"
+	},
+	"parent": "${id}:synthesizer/echo_ingot",
+	"criteria": {
+		"echo_block": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": [
+							"${id}:echo_block"
+						]
+					}
+				]
+			}
+		}
+	}
+}

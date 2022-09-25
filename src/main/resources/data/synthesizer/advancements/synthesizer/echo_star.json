@@ -1,0 +1,28 @@
+{
+	"display": {
+		"icon": {
+			"item": "${id}:echo_star"
+		},
+		"title": {
+			"translate": "advancements.synthesizer.echo_star.title"
+		},
+		"description": {
+			"translate": "advancements.synthesizer.echo_star.description"
+		}
+	},
+	"parent": "${id}:synthesizer/echo_shard",
+	"criteria": {
+		"echo_star": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": [
+							"${id}:echo_star"
+						]
+					}
+				]
+			}
+		}
+	}
+}

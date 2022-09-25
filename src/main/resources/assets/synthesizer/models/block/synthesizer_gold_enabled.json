@@ -1,0 +1,8 @@
+{
+	"parent": "block/cube_bottom_top",
+	"textures": {
+		"top": "${id}:block/synthesizer_top_gold_enabled",
+		"side": "${id}:block/synthesizer_side_gold_enabled",
+		"bottom": "${id}:block/synthesizer_bottom_gold_enabled"
+	}
+}

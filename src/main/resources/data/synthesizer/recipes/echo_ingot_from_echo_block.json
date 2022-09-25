@@ -1,0 +1,13 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"group": "echo_ingot",
+	"ingredients": [
+		{
+			"item": "${id}:echo_block"
+		}
+	],
+	"result": {
+		"item": "${id}:echo_ingot",
+		"count": 9
+	}
+}

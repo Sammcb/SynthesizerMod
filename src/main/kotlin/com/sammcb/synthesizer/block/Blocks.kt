@@ -1,0 +1,28 @@
+package com.sammcb.synthesizer.block
+
+import com.sammcb.synthesizer.Constants
+import com.sammcb.synthesizer.item.Items
+import net.minecraft.block.AbstractBlock.Settings
+import net.minecraft.block.BlockState
+import net.minecraft.block.MapColor
+import net.minecraft.block.Material
+import net.minecraft.entity.EntityType
+import net.minecraft.item.BlockItem
+import net.minecraft.item.Item
+import net.minecraft.sound.BlockSoundGroup
+import net.minecraft.util.math.BlockPos
+import net.minecraft.util.Rarity
+import net.minecraft.util.registry.Registry
+import net.minecraft.world.BlockView
+
+object Blocks {
+	val SYNTHESIZER = SynthesizerBlock(Settings.of(Material.METAL, MapColor.IRON_GRAY).requiresTool().strength(5f, 6f).sounds(BlockSoundGroup.METAL))
+	val ECHO_BLOCK = EchoBlock(Settings.of(Material.METAL, MapColor.BLACK).requiresTool().strength(5f, 6f).sounds(BlockSoundGroup.METAL))
+
+	fun init() {
+		Registry.register(Registry.BLOCK, Constants.id("synthesizer"), SYNTHESIZER)
+		Registry.register(Registry.ITEM, Constants.id("synthesizer"), BlockItem(SYNTHESIZER, Items.settings().rarity(Rarity.EPIC).fireproof()))
+		Registry.register(Registry.BLOCK, Constants.id("echo_block"), ECHO_BLOCK)
+		Registry.register(Registry.ITEM, Constants.id("echo_block"), BlockItem(ECHO_BLOCK, Items.settings().rarity(Rarity.RARE).fireproof()))
+	}
+}

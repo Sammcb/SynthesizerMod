@@ -1,0 +1,30 @@
+{
+	"display": {
+		"icon": {
+			"item": "${id}:echo_star"
+		},
+		"title": {
+			"translate": "advancements.synthesizer.root.title"
+		},
+		"background": "minecraft:textures/block/sculk_catalyst_top.png",
+		"description": {
+			"translate": "advancements.synthesizer.root.description"
+		},
+		"show_toast": false,
+		"announce_to_chat": false
+	},
+	"criteria": {
+		"nether_star": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": [
+							"minecraft:nether_star"
+						]
+					}
+				]
+			}
+		}
+	}
+}

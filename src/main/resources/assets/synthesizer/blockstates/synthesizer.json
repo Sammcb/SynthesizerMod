@@ -1,0 +1,40 @@
+{
+	"variants": {
+		"enabled=true,tier=wood": {
+			"model": "${id}:block/synthesizer_wood_enabled"
+		},
+		"enabled=true,tier=copper": {
+			"model": "${id}:block/synthesizer_copper_enabled"
+		},
+		"enabled=true,tier=iron": {
+			"model": "${id}:block/synthesizer_iron_enabled"
+		},
+		"enabled=true,tier=gold": {
+			"model": "${id}:block/synthesizer_gold_enabled"
+		},
+		"enabled=true,tier=diamond": {
+			"model": "${id}:block/synthesizer_diamond_enabled"
+		},
+		"enabled=true,tier=netherite": {
+			"model": "${id}:block/synthesizer_netherite_enabled"
+		},
+		"enabled=false,tier=wood": {
+			"model": "${id}:block/synthesizer_wood_disabled"
+		},
+		"enabled=false,tier=copper": {
+			"model": "${id}:block/synthesizer_copper_disabled"
+		},
+		"enabled=false,tier=iron": {
+			"model": "${id}:block/synthesizer_iron_disabled"
+		},
+		"enabled=false,tier=gold": {
+			"model": "${id}:block/synthesizer_gold_disabled"
+		},
+		"enabled=false,tier=diamond": {
+			"model": "${id}:block/synthesizer_diamond_disabled"
+		},
+		"enabled=false,tier=netherite": {
+			"model": "${id}:block/synthesizer_netherite_disabled"
+		}
+	}
+}

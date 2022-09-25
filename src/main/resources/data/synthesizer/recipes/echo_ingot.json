@@ -1,0 +1,13 @@
+{
+	"type": "minecraft:smithing",
+	"group": "echo_ingot",
+	"base": {
+		"item": "minecraft:echo_shard"
+	},
+	"addition": {
+		"item": "minecraft:netherite_ingot"
+	},
+	"result": {
+		"item": "${id}:echo_ingot"
+	}
+}

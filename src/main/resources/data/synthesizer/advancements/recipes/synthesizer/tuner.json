@@ -1,0 +1,47 @@
+{
+	"parent": "${id}:recipes/root",
+	"criteria": {
+		"echo_ingot": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": [
+							"${id}:echo_ingot"
+						]
+					}
+				]
+			}
+		},
+		"tuner": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": [
+							"${id}:tuner"
+						]
+					}
+				]
+			}
+		},
+		"recipe": {
+			"trigger": "minecraft:recipe_unlocked",
+			"conditions": {
+				"recipe": "${id}:tuner"
+			}
+		}
+	},
+	"requirements": [
+		[
+			"echo_ingot",
+			"tuner",
+			"recipe"
+		]
+	],
+	"rewards": {
+		"recipes": [
+			"${id}:tuner"
+		]
+	}
+}

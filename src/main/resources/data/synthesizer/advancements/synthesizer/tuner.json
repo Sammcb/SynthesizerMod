@@ -1,0 +1,29 @@
+{
+	"display": {
+		"icon": {
+			"item": "${id}:tuner"
+		},
+		"title": {
+			"translate": "advancements.synthesizer.tuner.title"
+		},
+		"description": {
+			"translate": "advancements.synthesizer.tuner.description"
+		},
+		"frame": "goal"
+	},
+	"parent": "${id}:synthesizer/echo_ingot",
+	"criteria": {
+		"tuner": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": [
+							"${id}:tuner"
+						]
+					}
+				]
+			}
+		}
+	}
+}

@@ -1,0 +1,61 @@
+{
+	"parent": "${id}:recipes/root",
+	"criteria": {
+		"echo_shard": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": [
+							"minecraft:echo_shard"
+						]
+					}
+				]
+			}
+		},
+		"netherite_ingot": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": [
+							"minecraft:netherite_ingot"
+						]
+					}
+				]
+			}
+		},
+		"echo_ingot": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [
+					{
+						"items": [
+							"${id}:echo_ingot"
+						]
+					}
+				]
+			}
+		},
+		"recipe": {
+			"trigger": "minecraft:recipe_unlocked",
+			"conditions": {
+				"recipe": "${id}:echo_ingot"
+			}
+		}
+	},
+	"requirements": [
+		[
+			"echo_shard",
+			"netherite_ingot",
+			"echp_ingot",
+			"recipe"
+		]
+	],
+	"rewards": {
+		"recipes": [
+			"${id}:echo_ingot",
+			"${id}:echo_ingot_from_echo_block"
+		]
+	}
+}
