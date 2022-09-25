@@ -12,9 +12,10 @@ import net.minecraft.util.registry.Registry
 import org.quiltmc.loader.api.QuiltLoader
 
 @Serializable
-private data class ConfigData(val allow: Boolean, val items: List<String>, val tiers: Map<String, Int>)
+private data class ConfigData(val allow: Boolean, val items: List<String>, val tiers: Map<String, Int>, val delay: Int)
 
 object Config {
+	const val WOOD_MIN_SIZE = 1
 	private var configData: ConfigData? = null
 	private const val defaultConfig = """{
 	"allow": false,
@@ -26,7 +27,8 @@ object Config {
 		"gold": 16,
 		"diamond": 32,
 		"netherite": 64
-	}
+	},
+	"delay": 20
 }"""
 
 	fun init() {
@@ -47,6 +49,7 @@ object Config {
 
 	fun allow(): Boolean = configData?.allow ?: false
 	fun items(): List<String> = configData?.items ?: listOf<String>()
+	fun delay(): Int = configData?.delay ?: 20
 
 	fun inList(itemStack: ItemStack): Boolean {
 		val tags = configData?.items?.filter { it.first() == '#' } ?: listOf<String>()
@@ -69,6 +72,7 @@ object Config {
 		}
 
 		val tiers = configData?.tiers ?: mapOf<String, Int>()
-		return tiers.getOrDefault(tier.asString(), defaultAmount)
+		val stackSize = tiers.getOrDefault(tier.asString(), defaultAmount)
+		return if (tier == Tier.WOOD && stackSize < 1) WOOD_MIN_SIZE else stackSize
 	}
 }

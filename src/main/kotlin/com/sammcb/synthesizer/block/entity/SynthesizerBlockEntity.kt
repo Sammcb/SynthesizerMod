@@ -2,6 +2,7 @@ package com.sammcb.synthesizer.block.entity
 
 import com.sammcb.synthesizer.block.SynthesizerBlock
 import com.sammcb.synthesizer.block.enums.Tier
+import com.sammcb.synthesizer.config.Config
 import net.minecraft.block.Blocks
 import net.minecraft.block.BlockState
 import net.minecraft.block.entity.BlockEntity
@@ -25,13 +26,12 @@ class SynthesizerBlockEntity(pos: BlockPos, state: BlockState): BlockEntity(Bloc
 
 	companion object {
 		private const val ITEM_STACK_KEY = "itemStack"
-		private const val TICK_DELAY = 20
 
 		fun tick(world: World, pos: BlockPos, state: BlockState, entity: SynthesizerBlockEntity) {
 			val below = pos.down()
 			if (world.isClient || entity.itemStack.isOf(Items.AIR) || world.getBlockState(below).getBlock() != Blocks.AIR || !state.get(SynthesizerBlock.ENABLED)) return
 
-			if (entity.ticked < TICK_DELAY) {
+			if (entity.ticked < Config.delay()) {
 				entity.ticked++
 				return
 			}
