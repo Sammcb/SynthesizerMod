@@ -1,8 +1,8 @@
 {
 	"block.${id}.synthesizer": "Synthesizer",
-	"block.${id}.synthesizer.tooltip_1": "Right click with an item to start synthesizing it",
+	"block.${id}.synthesizer.tooltip_1": "Use an item on the block to start synthesizing it",
 	"block.${id}.synthesizer.tooltip_2": "Requires an air block below to synthesize items",
-	"block.${id}.synthesizer.tooltip_3": "Can be toogled with redstone",
+	"block.${id}.synthesizer.tooltip_3": "Can be toggled with redstone",
 	"block.${id}.synthesizer.accept": "Synthesizing %s",
 	"block.${id}.synthesizer.deny": "Cannot synthesize %s",
 	"block.${id}.synthesizer.stop": "Halting synthesis",
