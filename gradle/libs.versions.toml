@@ -1,14 +1,14 @@
 [versions]
 # The latest versions are available at https://lambdaurora.dev/tools/import_quilt.html
-kotlin = "1.7.0"
+kotlin = "1.7.20"
 
 minecraft = "1.19.2"
-quilt_mappings = "1.19.2-rc2+build.1"
-quilt_loader = "0.17.4"
+quilt_mappings = "1.19.2+build.21"
+quilt_loader = "0.17.7-beta.1"
 
-quilted_fabric_api = "4.0.0-beta.11+0.60.0-1.19.2"
+quilted_fabric_api = "4.0.0-beta.20+0.66.0-1.19.2"
 
-quilt_lang_kotlin = "0.1.3+kt.1.7.10+flk.1.8.2-SNAPSHOT"
+quilt_lang_kotlin = "0.1.4+kt.1.7.20+flk.1.8.5-SNAPSHOT"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
@@ -20,4 +20,4 @@ quilted_fabric_api = { module = "org.quiltmc.quilted-fabric-api:quilted-fabric-a
 quilt_lang_kotlin = { module = "org.quiltmc.quilt-kotlin-libraries:quilt-kotlin-libraries", version.ref = "quilt_lang_kotlin" }
 
 [plugins]
-quilt_loom = { id = "org.quiltmc.loom", version = "0.12.+" }
+quilt_loom = { id = "org.quiltmc.loom", version = "1.0.6" }

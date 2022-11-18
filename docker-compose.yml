@@ -4,8 +4,8 @@ services:
     image: gradle:jdk18
     command: bash
     volumes:
-      - .:/code
+      - .:/code/SynthesizerMod
     container_name: java
-    working_dir: /code
+    working_dir: /code/SynthesizerMod
     tty: true
     stdin_open: true

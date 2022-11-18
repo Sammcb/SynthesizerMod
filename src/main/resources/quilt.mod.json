@@ -41,7 +41,7 @@
 			},
 			{
 				"id": "qkl_core",
-				"versions": ">=0.1.3"
+				"versions": ">=0.1.4"
 			}
 		]
 	}
