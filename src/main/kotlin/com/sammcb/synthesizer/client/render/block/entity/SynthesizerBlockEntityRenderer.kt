@@ -11,9 +11,9 @@ import net.minecraft.client.render.model.json.ModelTransformation
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.item.Items
 import net.minecraft.item.ItemStack
-import net.minecraft.tag.BlockTags
+import net.minecraft.registry.tag.BlockTags
+import net.minecraft.util.math.Axis
 import net.minecraft.util.math.MathHelper
-import net.minecraft.util.math.Vec3f
 
 class SynthesizerBlockEntityRenderer(context: Context): BlockEntityRenderer<SynthesizerBlockEntity> {
 	override fun render(synthesizer: SynthesizerBlockEntity, tickDelta: Float, matrices: MatrixStack, vertexConsumers: VertexConsumerProvider, light: Int, overlay: Int) {
@@ -25,7 +25,7 @@ class SynthesizerBlockEntityRenderer(context: Context): BlockEntityRenderer<Synt
 		val time = (synthesizer.getWorld()?.getTime() ?: 0) + tickDelta
 		val offset = MathHelper.sin(time / 8) / 8
 		matrices.translate(0.5, 1.25 + offset, 0.5)
-		matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(time * 4))
+		matrices.multiply(Axis.Y_POSITIVE.rotationDegrees(time * 4))
 
 		val itemStack = synthesizer.getItemStack()
 		val lightAbove = WorldRenderer.getLightmapCoordinates(synthesizer.getWorld(), synthesizer.getPos().up())

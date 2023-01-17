@@ -12,6 +12,7 @@ dependencies {
 	modImplementation(libs.quilt.loader)
 	modImplementation(libs.quilt.lang.kotlin)
 	modImplementation(libs.quilted.fabric.api)
+	modImplementation(libs.qsl)
 }
 
 tasks {

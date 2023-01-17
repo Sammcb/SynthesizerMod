@@ -14,9 +14,9 @@ import net.minecraft.nbt.NbtCompound
 import net.minecraft.network.Packet
 import net.minecraft.network.listener.ClientPlayPacketListener
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket
+import net.minecraft.registry.tag.BlockTags
 import net.minecraft.sound.SoundCategory
 import net.minecraft.sound.SoundEvents
-import net.minecraft.tag.BlockTags
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 
@@ -61,7 +61,7 @@ class SynthesizerBlockEntity(pos: BlockPos, state: BlockState): BlockEntity(Bloc
 		itemStack = ItemStack.fromNbt(nbt.getCompound(ITEM_STACK_KEY))
 	}
 
-	override fun toInitialChunkDataNbt(): NbtCompound {
+	override fun toSyncedNbt(): NbtCompound {
 		return NbtCompound().also(::writeNbt)
 	}
 

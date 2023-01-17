@@ -41,7 +41,7 @@
 			},
 			{
 				"id": "qkl_core",
-				"versions": ">=0.1.4"
+				"versions": ">=${quiltKotlinVersion}"
 			}
 		]
 	}

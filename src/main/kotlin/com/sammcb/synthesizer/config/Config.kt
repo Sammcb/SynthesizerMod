@@ -6,9 +6,11 @@ import java.io.File
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import net.minecraft.item.ItemStack
-import net.minecraft.tag.TagKey
+import net.minecraft.registry.Registries
+import net.minecraft.registry.Registry
+import net.minecraft.registry.RegistryKeys
+import net.minecraft.registry.tag.TagKey
 import net.minecraft.util.Identifier
-import net.minecraft.util.registry.Registry
 import org.quiltmc.loader.api.QuiltLoader
 
 @Serializable
@@ -29,7 +31,8 @@ object Config {
 		"netherite": 64
 	},
 	"delay": 20
-}"""
+}
+"""
 
 	fun init() {
 		val path = QuiltLoader.getConfigDir();
@@ -54,10 +57,10 @@ object Config {
 	fun inList(itemStack: ItemStack): Boolean {
 		val tags = configData?.items?.filter { it.first() == '#' } ?: listOf<String>()
 		for (tag in tags) {
-			val tagKey = TagKey.of(Registry.ITEM_KEY, Identifier(tag.drop(1)))
+			val tagKey = TagKey.of(RegistryKeys.ITEM, Identifier(tag.drop(1)))
 			if (itemStack.isIn(tagKey)) return true
 		}
-		val itemId = Registry.ITEM.getId(itemStack.getItem()).toString()
+		val itemId = Registries.ITEM.getId(itemStack.getItem()).toString()
 		return Config.items().contains(itemId)
 	}
 
