@@ -1,7 +1,7 @@
 version: '3'
 services:
   java:
-    image: gradle:jdk18
+    image: gradle:jdk19
     command: bash
     volumes:
       - .:/code/SynthesizerMod

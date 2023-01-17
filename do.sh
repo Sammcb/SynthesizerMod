@@ -16,7 +16,6 @@ help() {
 	print_info init "Download gradle wrapper and build project"
 	print_info run_client "Run Minecraft client"
 	print_info run_server "Run Minecraft server"
-	print_info migrate_mappings "Update yarn mappings"
 	print_info generate_source "Generate Minecraft source files"
 }
 
@@ -71,14 +70,10 @@ run_server() {
 	./gradlew runServer
 }
 
-migrate_mappings() {
-	./gradlew migrateMappings --mappings "1.19.2+build.8" --input ./src/main/kotlin/
-}
-
 generate_source() {
 	rm -rf mcSrc.nosync
 	./gradlew genSources
-	cp .gradle/quilt-loom-cache/*.*.*/loom.mappings.*/minecraft-project-@-merged-named-sources.jar mcSrc.zip
+	cp .gradle/quilt-loom-cache/*.*.*/*mappings*/minecraft-project-@-merged-named-sources.jar mcSrc.zip
 	unzip -q mcSrc.zip -d mcSrc.nosync
 	rm -f mcSrc.zip
 }
