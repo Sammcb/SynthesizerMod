@@ -10,14 +10,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: gradle:jdk18
+      image: gradle:jdk19
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
       - name: Initialize the project and build the jar file
-        run: |
-          ./do.sh init
+        run: ./do.sh init
       - name: Archive jar file
         uses: actions/upload-artifact@v3
         with:
