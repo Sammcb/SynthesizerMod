@@ -73,7 +73,7 @@ run_server() {
 generate_source() {
 	rm -rf mcSrc.nosync
 	./gradlew genSources
-	cp .gradle/quilt-loom-cache/*.*.*/*mappings*/minecraft-project-@-merged-named-sources.jar mcSrc.zip
+	cp .gradle/quilt-loom-cache/minecraftMaven/net/minecraft/minecraft-merged-project-root/*quilt-mappings*/*-sources.jar mcSrc.zip
 	unzip -q mcSrc.zip -d mcSrc.nosync
 	rm -f mcSrc.zip
 }
@@ -83,4 +83,3 @@ if [ ${1:+x} ]; then
 else
 	help
 fi
-	

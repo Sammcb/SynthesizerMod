@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: gradle:jdk19
+      image: gradle:jdk18
 
     steps:
       - name: Checkout repository

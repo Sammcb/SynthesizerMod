@@ -1,17 +1,17 @@
 [versions]
 # Check https://lambdaurora.dev/tools/import_quilt.html https://maven.quiltmc.org https://kotlinlang.org/docs/releases.html#release-details
-kotlin = "1.8.0"
+kotlin = "1.8.10"
 
-minecraft = "1.19.3"
-quilt_mappings = "1.19.3+build.17"
-quilt_loader = "0.18.1-beta.43"
+minecraft = "1.19.4"
+quilt_mappings = "1.19.4+build.5"
+quilt_loader = "0.18.5"
 
-quilted_fabric_api = "5.0.0-alpha.9+0.72.0-1.19.3"
-quilt_lang_kotlin = "1.1.0+kt.1.8.0+flk.1.9.0"
+quilted_fabric_api = "6.0.0-beta.2+0.76.0-1.19.4"
+quilt_lang_kotlin = "1.1.1+kt.1.8.10+flk.1.9.2"
 
-quilt_loom = "1.0.16"
+quilt_loom = "1.1.13"
 
-qsl = "4.0.0-beta.5+1.19.3"
+qsl = "5.0.0-beta.1+1.19.4"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
