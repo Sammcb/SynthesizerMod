@@ -7,7 +7,7 @@ import net.minecraft.client.render.WorldRenderer
 import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.render.block.entity.BlockEntityRenderer
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory.Context
-import net.minecraft.client.render.model.json.ModelTransformation
+import net.minecraft.client.render.model.json.ModelTransformationMode
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.item.Items
 import net.minecraft.item.ItemStack
@@ -29,7 +29,9 @@ class SynthesizerBlockEntityRenderer(context: Context): BlockEntityRenderer<Synt
 
 		val itemStack = synthesizer.getItemStack()
 		val lightAbove = WorldRenderer.getLightmapCoordinates(synthesizer.getWorld(), synthesizer.getPos().up())
-		MinecraftClient.getInstance().getItemRenderer().renderItem(itemStack, ModelTransformation.Mode.GROUND, lightAbove, overlay, matrices, vertexConsumers, 0)
+		val itemRenderer = MinecraftClient.getInstance().getItemRenderer()
+		val model = itemRenderer.getHeldItemModel(itemStack, null, null, 0)
+		itemRenderer.renderItem(itemStack, ModelTransformationMode.GROUND, false, matrices, vertexConsumers, lightAbove, overlay, model)
 
 		matrices.pop()
 	}

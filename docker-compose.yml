@@ -1,10 +1,9 @@
 version: '3'
 services:
   java:
-    image: gradle:jdk19
+    image: gradle:jdk18
     command: bash
-    volumes:
-      - .:/code/SynthesizerMod
+    volumes: [.:/code/SynthesizerMod]
     container_name: java
     working_dir: /code/SynthesizerMod
     tty: true
