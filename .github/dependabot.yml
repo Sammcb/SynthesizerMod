@@ -7,6 +7,11 @@ updates:
     day: monday
     time: "00:00"
     timezone: America/Los_Angeles
+  cooldown:
+    default-days: 7
+  groups:
+    github-actions:
+      patterns: ["*"]
 - package-ecosystem: gradle
   directory: /
   schedule:
@@ -14,6 +19,8 @@ updates:
     day: monday
     time: "00:00"
     timezone: America/Los_Angeles
+  cooldown:
+    default-days: 7
   groups:
-    github-actions:
+    gradle:
       patterns: ["*"]
