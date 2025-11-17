@@ -1,0 +1,19 @@
+{
+	"parent": "${id}:synthesizer/root",
+	"display": {
+		"icon": { "id": "minecraft:echo_shard" },
+		"title": { "translate": "advancements.synthesizer.echo_shard.title" },
+		"description": {
+			"translate": "advancements.synthesizer.echo_shard.description"
+		}
+	},
+	"criteria": {
+		"has_echo_shard": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [{ "items": "minecraft:echo_shard" }]
+			}
+		}
+	},
+	"requirements": [["has_echo_shard"]]
+}

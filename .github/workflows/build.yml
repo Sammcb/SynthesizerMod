@@ -1,0 +1,49 @@
+name: Build
+on: workflow_call
+permissions: {}
+jobs:
+  build:
+    strategy:
+      matrix:
+        artifact:
+        - name: jar
+          make-target: build
+          path-prefix: synthesizer
+    runs-on: ubuntu-24.04-arm
+    name: ${{ matrix.artifact.name }}
+    steps:
+    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      with:
+        persist-credentials: false
+    - uses: ./.github/actions/setup-nix
+    - name: Build ${{ matrix.artifact.name }}
+      run: nix develop .#build -c make ${{ matrix.artifact.make-target }}
+    - name: Upload ${{ matrix.artifact.name }}
+      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+      with:
+        name: ${{ matrix.artifact.name }}
+        path: ${{ matrix.artifact.path-prefix }}-*.jar
+        include-hidden-files: true
+        if-no-files-found: error
+  checksums:
+    runs-on: ubuntu-24.04-arm
+    needs: build
+    steps:
+    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      with:
+        persist-credentials: false
+    - uses: ./.github/actions/setup-nix
+    - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+      with:
+        merge-multiple: true
+        path: artifacts
+    - name: Generate artifact checksums
+      working-directory: artifacts
+      run: nix develop .#createChecksums -c sha256sum * >> ../checksums.txt
+    - name: Upload checksums
+      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+      with:
+        name: checksums
+        path: checksums.txt
+        include-hidden-files: true
+        if-no-files-found: error

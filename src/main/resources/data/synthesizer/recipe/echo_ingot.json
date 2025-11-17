@@ -1,0 +1,9 @@
+{
+	"type": "minecraft:smithing_transform",
+	"base": "minecraft:echo_shard",
+	"addition": "minecraft:netherite_ingot",
+	"template": "minecraft:amethyst_shard",
+	"result": {
+		"id": "${id}:echo_ingot"
+	}
+}

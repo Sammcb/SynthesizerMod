@@ -1,31 +1,20 @@
 package com.sammcb.synthesizer.block
 
 import com.sammcb.synthesizer.Constants
-import com.sammcb.synthesizer.item.Items
-import net.minecraft.block.AbstractBlock.Settings
-import net.minecraft.block.Block
-import net.minecraft.block.BlockState
-import net.minecraft.block.MapColor
-import net.minecraft.block.Material
-import net.minecraft.entity.EntityType
-import net.minecraft.item.Item
-import net.minecraft.registry.Registries
-import net.minecraft.registry.Registry
-import net.minecraft.sound.BlockSoundGroup
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.Rarity
-import net.minecraft.world.BlockView
+import net.minecraft.core.registries.Registries
+import net.minecraft.resources.ResourceKey
+import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.block.SoundType
+import net.minecraft.world.level.block.state.BlockBehaviour
+import net.minecraft.world.level.material.MapColor
 
 object Blocks {
-	val SYNTHESIZER = SynthesizerBlock(Settings.of(Material.METAL, MapColor.IRON_GRAY).requiresTool().strength(5f, 6f).sounds(BlockSoundGroup.METAL))
-	val ECHO_BLOCK = EchoBlock(Settings.of(Material.METAL, MapColor.BLACK).requiresTool().strength(5f, 6f).sounds(BlockSoundGroup.METAL))
+	private fun resourceKey(blockId: String) = ResourceKey.create(Registries.BLOCK, Constants.id(blockId))
 
-	private fun register(blockId: String, block: Block) {
-		Registry.register(Registries.BLOCK, Constants.id(blockId), block)
-	}
+	private val synthesizerProperties = BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GRAY).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL)
+	val SYNTHESIZER = Blocks.register(resourceKey("synthesizer"), ::SynthesizerBlock, synthesizerProperties)
+	private val echoBlockProperties = BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK).requiresCorrectToolForDrops().strength(5f, 6f).sound(SoundType.METAL)
+	val ECHO_BLOCK = Blocks.register(resourceKey("echo_block"), echoBlockProperties)
 
-	fun init() {
-		register("synthesizer", SYNTHESIZER)
-		register("echo_block", ECHO_BLOCK)
-	}
+	fun init() {}
 }

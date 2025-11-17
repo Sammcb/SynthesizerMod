@@ -1,0 +1,47 @@
+{
+	"parent": "${id}:recipes/root",
+	"criteria": {
+		"has_echo_shard": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [{ "items": "minecraft:echo_shard" }]
+			}
+		},
+		"has_netherite_ingot": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [{ "items": "minecraft:netherite_ingot" }]
+			}
+		},
+		"has_amethyst_shard": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [{ "items": "minecraft:amethyst_shard" }]
+			}
+		},
+		"has_echo_ingot": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [{ "items": "${id}:echo_ingot" }]
+			}
+		},
+		"has_the_recipe": {
+			"trigger": "minecraft:recipe_unlocked",
+			"conditions": {
+				"recipe": "${id}:echo_ingot"
+			}
+		}
+	},
+	"requirements": [
+		[
+			"has_echo_shard",
+			"has_netherite_ingot",
+			"has_amethyst_shard",
+			"has_echo_ingot",
+			"has_the_recipe"
+		]
+	],
+	"rewards": {
+		"recipes": ["${id}:echo_ingot", "${id}:echo_ingot_from_echo_block"]
+	}
+}

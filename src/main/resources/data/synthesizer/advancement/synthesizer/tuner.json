@@ -1,0 +1,20 @@
+{
+	"parent": "${id}:synthesizer/echo_ingot",
+	"display": {
+		"icon": { "id": "${id}:tuner" },
+		"title": { "translate": "advancements.synthesizer.tuner.title" },
+		"description": {
+			"translate": "advancements.synthesizer.tuner.description"
+		},
+		"frame": "goal"
+	},
+	"criteria": {
+		"has_tuner": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [{ "items": "${id}:tuner" }]
+			}
+		}
+	},
+	"requirements": [["has_tuner"]]
+}

@@ -1,0 +1,29 @@
+{
+	"schemaVersion": 1,
+	"id": "${id}",
+	"version": "${version}",
+	"name": "Synthesizer",
+	"description": "Matter from sound energy.",
+	"authors": ["Sammcb"],
+	"contact": {
+		"homepage": "https://github.com/Sammcb/SynthesizerMod/wiki",
+		"sources": "https://github.com/Sammcb/SynthesizerMod",
+		"issues": "https://github.com/Sammcb/SynthesizerMod/issues"
+	},
+	"license": "MIT",
+	"icon": "assets/${id}/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [{ "value": "com.sammcb.${id}.Synthesizer", "adapter": "kotlin" }],
+		"client": [
+			{ "value": "com.sammcb.${id}.SynthesizerClient", "adapter": "kotlin" }
+		]
+	},
+	"depends": {
+		"java": ">=${javaVersion}",
+		"minecraft": ">=${minecraftVersion}",
+		"fabricloader": ">=${loaderVersion}",
+		"fabric-api": ">=${apiVersion}",
+		"fabric-language-kotlin": ">=${fabricKotlinVersion}"
+	}
+}

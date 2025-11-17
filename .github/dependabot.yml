@@ -1,10 +1,19 @@
 version: 2
 updates:
-- package-ecosystem: gradle
-  directory: /
-  schedule:
-    interval: weekly
 - package-ecosystem: github-actions
   directory: /
   schedule:
     interval: weekly
+    day: monday
+    time: "00:00"
+    timezone: America/Los_Angeles
+- package-ecosystem: gradle
+  directory: /
+  schedule:
+    interval: weekly
+    day: monday
+    time: "00:00"
+    timezone: America/Los_Angeles
+  groups:
+    github-actions:
+      patterns: ["*"]

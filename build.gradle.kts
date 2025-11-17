@@ -1,71 +1,104 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
+	// Add Kotlin plugin
 	kotlin("jvm").version(libs.versions.kotlin)
+	// Add Kotlin serialization for JSON
 	kotlin("plugin.serialization").version(libs.versions.kotlin)
-	alias(libs.plugins.quilt.loom)
+	// Add Fabric Loom for building mod
+	alias(libs.plugins.fabric.loom)
+}
+
+val modId: String by project
+val modVersion: String by project
+val mavenGroup: String by project
+
+// Values expected by Fabric
+version = modVersion
+group = mavenGroup
+
+base {
+	// Sets archive base name for archive tasks
+	archivesName.set(modId)
+}
+
+// Configure build to separate client and common code
+loom {
+	splitEnvironmentSourceSets()
+
+	mods {
+		register(modId) {
+			sourceSet(sourceSets["main"])
+			sourceSet(sourceSets["client"])
+		}
+	}
 }
 
 dependencies {
+	// Add Minecraft dependency
 	minecraft(libs.minecraft)
-	mappings(variantOf(libs.quilt.mappings) {
-		classifier("intermediary-v2")
-	})
-	modImplementation(libs.quilt.loader)
-	modImplementation(libs.quilt.lang.kotlin)
-	modImplementation(libs.quilted.fabric.api)
-	modImplementation(libs.qsl)
+	// Use official Mojan mappings
+	mappings(loom.officialMojangMappings())
+	// Add Fabric loader
+	modImplementation(libs.fabric.loader)
+	// Add Fabric API
+	modImplementation(libs.fabric.api)
+	// Add Fabric language Kotlin
+	modImplementation(libs.fabric.lang.kotlin)
 }
 
 tasks {
-	val modId: String by project
-	val javaVersion = JavaVersion.VERSION_17
+	val javaVersion = JavaVersion.toVersion(libs.versions.java.get())
 
+	// Set Java compilation settings
 	withType<JavaCompile> {
-		options.encoding = "UTF-8"
-		sourceCompatibility = javaVersion.toString()
-		targetCompatibility = javaVersion.toString()
 		options.release.set(javaVersion.toString().toInt())
 	}
 
-	withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-		kotlinOptions { jvmTarget = javaVersion.toString() }
+	// Set Kotlin compliation settings
+	kotlin {
+		compilerOptions {
+			jvmTarget.set(JvmTarget.fromTarget(javaVersion.toString()))
+		}
 	}
 
 	processResources {
-		val modVersion: String by project
-		val mavenGroup: String by project
-
 		inputs.property("version", modVersion)
 
-		filesMatching("quilt.mod.json") {
+		// Template values in mod info file
+		filesMatching("fabric.mod.json") {
 			expand(
 				"version" to modVersion,
 				"id" to modId,
 				"group" to mavenGroup,
+				"javaVersion" to javaVersion.toString(),
 				"minecraftVersion" to libs.versions.minecraft.get(),
-				"loaderVersion" to libs.versions.quilt.loader.get(),
-				"apiVersion" to libs.versions.quilted.fabric.api.get(),
-				"quiltKotlinVersion" to libs.versions.quilt.lang.kotlin.get(),
-				"javaVersion" to javaVersion.toString()
+				"loaderVersion" to libs.versions.fabric.loader.get(),
+				"apiVersion" to libs.versions.fabric.api.get(),
+				"fabricKotlinVersion" to libs.versions.fabric.lang.kotlin.get()
 			)
 		}
 
+		// Template values in data/resource pack files
 		filesMatching("**/*.json") {
 			expand("id" to modId)
 		}
 	}
 
-	withType<AbstractArchiveTask> {
-		from("LICENSE") {
-			rename { "${it}_${modId}" }
-		}
-	}
-
 	java {
-		toolchain {
-			languageVersion.set(JavaLanguageVersion.of(javaVersion.toString()))
-		}
+		// Generate Minecraft source
+		withSourcesJar()
+
+		// Pin to Java version
 		sourceCompatibility = javaVersion
 		targetCompatibility = javaVersion
-		withSourcesJar()
+	}
+
+	jar {
+		// Rename jar file
+		inputs.property("archivesName", modId)
+
+		// Include LICENSE file in jar output
+		from("LICENSE")
 	}
 }

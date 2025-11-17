@@ -1,0 +1,35 @@
+{
+	"parent": "${id}:recipes/root",
+	"criteria": {
+		"has_echo_shard": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [{ "items": "minecraft:echo_shard" }]
+			}
+		},
+		"has_chorus_flower": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [{ "items": "minecraft:chorus_flower" }]
+			}
+		},
+		"has_echo_flower": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [{ "items": "${id}:echo_flower" }]
+			}
+		},
+		"has_the_recipe": {
+			"trigger": "minecraft:recipe_unlocked",
+			"conditions": {
+				"recipe": "${id}:echo_flower"
+			}
+		}
+	},
+	"requirements": [
+		["has_echo_shard", "has_chorus_flower", "has_echo_flower", "has_the_recipe"]
+	],
+	"rewards": {
+		"recipes": ["${id}:echo_flower"]
+	}
+}

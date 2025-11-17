@@ -1,0 +1,12 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern": [" E ", "ESE", " E "],
+	"key": {
+		"E": "minecraft:echo_shard",
+		"S": "minecraft:nether_star"
+	},
+	"result": {
+		"id": "${id}:echo_star"
+	}
+}
