@@ -11,7 +11,7 @@ import net.fabricmc.api.ModInitializer
 @Suppress("unused")
 object Synthesizer: ModInitializer {
 	override fun onInitialize() {
-		Config.validateFileExists()
+		Config.init()
 		Blocks.init()
 		BlockEntities.init()
 		Items.init()
