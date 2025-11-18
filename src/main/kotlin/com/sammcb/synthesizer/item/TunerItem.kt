@@ -5,45 +5,37 @@ import com.sammcb.synthesizer.block.Blocks
 import com.sammcb.synthesizer.block.SynthesizerBlock
 import com.sammcb.synthesizer.block.enums.Tier
 import com.sammcb.synthesizer.config.Config
-import net.minecraft.client.item.TooltipContext
-import net.minecraft.item.Item
-import net.minecraft.item.ItemStack
-import net.minecraft.item.ItemUsageContext
-import net.minecraft.sound.SoundCategory
-import net.minecraft.sound.SoundEvents
-import net.minecraft.text.Text
-import net.minecraft.util.ActionResult
-import net.minecraft.util.Formatting
-import net.minecraft.world.World
+import net.minecraft.network.chat.Component
+import net.minecraft.sounds.SoundEvents
+import net.minecraft.sounds.SoundSource
+import net.minecraft.world.InteractionResult
+import net.minecraft.world.item.Item
+import net.minecraft.world.item.context.UseOnContext
+import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.gameevent.GameEvent
 
-class TunerItem(settings: Settings): Item(settings) {
-	override fun useOnBlock(context: ItemUsageContext): ActionResult {
-		val world = context.getWorld()
-		if (world.isClient) return ActionResult.SUCCESS
+class TunerItem(properties: Item.Properties): Item(properties) {
+	override fun useOn(useOnContext: UseOnContext): InteractionResult {
+		val level = useOnContext.getLevel()
+		if (level.isClientSide()) return InteractionResult.SUCCESS
 
-		val pos = context.getBlockPos()
-		val state = world.getBlockState(pos)
-		if (!state.isOf(Blocks.SYNTHESIZER)) return ActionResult.FAIL
+		val pos = useOnContext.getClickedPos()
+		val state = level.getBlockState(pos)
+		if (!state.`is`(Blocks.SYNTHESIZER)) return InteractionResult.FAIL
 
-		val currentTier = state.get(SynthesizerBlock.TIER)
-		val nextTier = Tier.values().firstOrNull { it.ordinal > currentTier.ordinal && it.stackSize() > 0 } ?: Tier.WOOD
-		world.setBlockState(pos, state.with(SynthesizerBlock.TIER, nextTier))
+		val currentTier = state.getValue(SynthesizerBlock.TIER)
+		val nextTier = Tier.values().firstOrNull { it.ordinal > currentTier.ordinal } ?: Tier.WOOD
+		val updateFlags = Block.UPDATE_NEIGHBORS or Block.UPDATE_CLIENTS or Block.UPDATE_IMMEDIATE
+		level.setBlock(pos, state.setValue(SynthesizerBlock.TIER, nextTier), updateFlags)
+		val player = useOnContext.getPlayer()
+		level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos)
 
-		val player = context.getPlayer()
 		if (player != null) {
-			val ticks = if (Config.delay() < 0) 0 else Config.delay()
-			player.sendMessage(Text.translatable("item.${Constants.MOD_ID}.tuner.tune", nextTier.stackSize(), ticks), true)
+			player.displayClientMessage(Component.translatable("item.${Constants.MOD_ID}.tuner.tune", nextTier.stackSize(), Config.delay()), true)
 		}
 
-		world.playSound(null, pos, SoundEvents.BLOCK_AMETHYST_BLOCK_PLACE, SoundCategory.PLAYERS, 1f, 1f)
+		level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_PLACE, SoundSource.PLAYERS, 1f, 1f)
 
-		return ActionResult.SUCCESS
-	}
-
-	override fun appendTooltip(itemStack: ItemStack, world: World?, tooltip: MutableList<Text>, context: TooltipContext) {
-		val ticks = if (Config.delay() < 0) 0 else Config.delay()
-		tooltip.add(Text.translatable("item.${Constants.MOD_ID}.tuner.tooltip_1").formatted(Formatting.DARK_PURPLE))
-		tooltip.add(Text.translatable("item.${Constants.MOD_ID}.tuner.tooltip_2").formatted(Formatting.DARK_PURPLE))
-		tooltip.add(Text.translatable("item.${Constants.MOD_ID}.tuner.tooltip_3", ticks).formatted(Formatting.DARK_PURPLE))
+		return InteractionResult.SUCCESS
 	}
 }

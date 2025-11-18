@@ -2,22 +2,24 @@ package com.sammcb.synthesizer.config
 
 import com.sammcb.synthesizer.Constants
 import com.sammcb.synthesizer.block.enums.Tier
+import com.sammcb.synthesizer.Log.LOGGER
 import java.io.File
+import kotlin.math.max
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
-import net.minecraft.item.ItemStack
-import net.minecraft.registry.Registries
-import net.minecraft.registry.Registry
-import net.minecraft.registry.RegistryKeys
-import net.minecraft.registry.tag.TagKey
-import net.minecraft.util.Identifier
-import org.quiltmc.loader.api.QuiltLoader
+import net.minecraft.core.registries.Registries
+import net.minecraft.resources.ResourceLocation
+import net.minecraft.tags.TagKey
+import net.minecraft.world.item.ItemStack
+import net.fabricmc.loader.api.FabricLoader
 
 @Serializable
 private data class ConfigData(val allow: Boolean, val items: List<String>, val tiers: Map<String, Int>, val delay: Int)
 
 object Config {
-	const val WOOD_MIN_SIZE = 1
+	private const val MIN_SIZE = 1
+	private const val MIN_DELAY = 0
+	private const val CONFIG_FILE_NAME = "${Constants.MOD_ID}.json"
 	private var configData: ConfigData? = null
 	private const val defaultConfig = """{
 	"allow": false,
@@ -34,9 +36,9 @@ object Config {
 }
 """
 
-	fun init() {
-		val path = QuiltLoader.getConfigDir();
-		val file = File("${path}/${Constants.MOD_ID}.json")
+	init {
+		val path = FabricLoader.getInstance().getConfigDir();
+		val file = File("${path}/${CONFIG_FILE_NAME}")
 
 		val isNewFile = file.createNewFile()
 		val jsonString: String
@@ -50,18 +52,27 @@ object Config {
 		configData = Json.decodeFromString<ConfigData>(jsonString)
 	}
 
-	fun allow(): Boolean = configData?.allow ?: false
-	fun items(): List<String> = configData?.items ?: listOf<String>()
-	fun delay(): Int = configData?.delay ?: 20
+	fun validateFileExists() {
+		val configFile = FabricLoader.getInstance().getConfigDir().resolve(CONFIG_FILE_NAME).toFile()
+		if (configFile.exists()) return
+		LOGGER.warning("Config file ${CONFIG_FILE_NAME} does not exist!")
+	}
+
+	fun allow() = configData?.allow ?: false
+	fun delay() = max(configData?.delay ?: 20, MIN_DELAY)
 
 	fun inList(itemStack: ItemStack): Boolean {
-		val tags = configData?.items?.filter { it.first() == '#' } ?: listOf<String>()
+		val tagPrefix = "#"
+		val tags = configData?.items?.filter { it.startsWith(tagPrefix) } ?: listOf<String>()
 		for (tag in tags) {
-			val tagKey = TagKey.of(RegistryKeys.ITEM, Identifier(tag.drop(1)))
-			if (itemStack.isIn(tagKey)) return true
+			val tagId = ResourceLocation.withDefaultNamespace(tag.removePrefix(tagPrefix))
+			val tagKey = TagKey.create(Registries.ITEM, tagId)
+			if (itemStack.`is`(tagKey)) return true
 		}
-		val itemId = Registries.ITEM.getId(itemStack.getItem()).toString()
-		return Config.items().contains(itemId)
+
+		val itemId = itemStack.getItem().toString()
+		val configItems: List<String> = configData?.items ?: listOf<String>()
+		return configItems.contains(itemId)
 	}
 
 	fun stackSize(tier: Tier): Int {
@@ -75,7 +86,7 @@ object Config {
 		}
 
 		val tiers = configData?.tiers ?: mapOf<String, Int>()
-		val stackSize = tiers.getOrDefault(tier.asString(), defaultAmount)
-		return if (tier == Tier.WOOD && stackSize < 1) WOOD_MIN_SIZE else stackSize
+		val stackSize = tiers.getOrDefault(tier.level, defaultAmount)
+		return max(stackSize, MIN_SIZE)
 	}
 }

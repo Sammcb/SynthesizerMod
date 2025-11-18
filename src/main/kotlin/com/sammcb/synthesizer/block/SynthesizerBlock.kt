@@ -5,109 +5,130 @@ import com.sammcb.synthesizer.block.entity.BlockEntities
 import com.sammcb.synthesizer.block.entity.SynthesizerBlockEntity
 import com.sammcb.synthesizer.block.enums.Tier
 import com.sammcb.synthesizer.config.Config
-import net.minecraft.block.Block
-import net.minecraft.block.BlockEntityProvider
-import net.minecraft.block.BlockRenderType
-import net.minecraft.block.Blocks
-import net.minecraft.block.BlockState
-import net.minecraft.block.BlockWithEntity
-import net.minecraft.block.entity.BlockEntity
-import net.minecraft.block.entity.BlockEntityTicker
-import net.minecraft.block.entity.BlockEntityType
-import net.minecraft.client.item.TooltipContext
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.item.Items
-import net.minecraft.item.ItemStack
-import net.minecraft.particle.ParticleTypes
-import net.minecraft.server.world.ServerWorld
-import net.minecraft.state.StateManager
-import net.minecraft.state.property.EnumProperty
-import net.minecraft.state.property.Properties
-import net.minecraft.text.Text
-import net.minecraft.util.ActionResult
-import net.minecraft.util.Formatting
-import net.minecraft.util.Hand
-import net.minecraft.util.hit.BlockHitResult
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.random.RandomGenerator
-import net.minecraft.world.BlockView
-import net.minecraft.world.World
+import com.mojang.serialization.MapCodec
+import net.minecraft.ChatFormatting
+import net.minecraft.core.BlockPos
+import net.minecraft.core.particles.ParticleTypes
+import net.minecraft.network.chat.Component
+import net.minecraft.tags.BlockTags
+import net.minecraft.util.RandomSource
+import net.minecraft.world.InteractionHand
+import net.minecraft.world.InteractionResult
+import net.minecraft.world.entity.player.Player
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.context.BlockPlaceContext
+import net.minecraft.world.level.Level
+import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.BaseEntityBlock
+import net.minecraft.world.level.block.entity.BlockEntity
+import net.minecraft.world.level.block.entity.BlockEntityTicker
+import net.minecraft.world.level.block.entity.BlockEntityType
+import net.minecraft.world.level.block.state.BlockBehaviour
+import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.level.block.state.StateDefinition
+import net.minecraft.world.level.block.state.properties.BlockStateProperties
+import net.minecraft.world.level.block.state.properties.EnumProperty
+import net.minecraft.world.level.gameevent.GameEvent
+import net.minecraft.world.level.redstone.Orientation
+import net.minecraft.world.phys.BlockHitResult
+import net.minecraft.world.phys.Vec3
 
-class SynthesizerBlock(settings: Settings): BlockWithEntity(settings)  {
+class SynthesizerBlock(properties: BlockBehaviour.Properties): BaseEntityBlock(properties)  {
 	companion object {
-		val ENABLED = Properties.ENABLED
-		val TIER = EnumProperty.of("tier", Tier::class.java)
+		val CODEC: MapCodec<SynthesizerBlock> = simpleCodec(::SynthesizerBlock)
+		val ENABLED = BlockStateProperties.ENABLED
+		val TIER = EnumProperty.create("tier", Tier::class.java)
 	}
 
 	init {
-		setDefaultState(getDefaultState().with(ENABLED, true).with(TIER, Tier.WOOD))
+		registerDefaultState(stateDefinition.any().setValue(ENABLED, true).setValue(TIER, Tier.WOOD))
 	}
 
-	override fun createBlockEntity(pos: BlockPos, state: BlockState): BlockEntity = SynthesizerBlockEntity(pos, state)
+	override fun codec() = CODEC
 
-	override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hand: Hand, hit: BlockHitResult): ActionResult {
-		if (world.isClient) return ActionResult.SUCCESS
+	override fun newBlockEntity(pos: BlockPos, state: BlockState) = SynthesizerBlockEntity(pos, state)
 
-		val itemStack = player.getStackInHand(hand)
+	private fun setSynthesizedItem(level: Level, pos: BlockPos, itemStack: ItemStack, player: Player) {
+		if (level.isClientSide()) return
+		val synthesizerBlockEntity = level.getBlockEntity(pos)
+		if (synthesizerBlockEntity !is SynthesizerBlockEntity) return
+
+		synthesizerBlockEntity.setTheItem(itemStack.consumeAndReturn(1, player))
+		// Emit event of block change
+		level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos)
+	}
+
+	override fun useItemOn(itemStack: ItemStack, state: BlockState, level: Level, pos: BlockPos, player: Player, hand: InteractionHand, hit: BlockHitResult): InteractionResult {
+		if (level.isClientSide()) return InteractionResult.SUCCESS
+		val synthesizerBlockEntity = level.getBlockEntity(pos)
+		if (synthesizerBlockEntity !is SynthesizerBlockEntity) return InteractionResult.SUCCESS
+		if (itemStack.isEmpty() || !synthesizerBlockEntity.getTheItem().isEmpty()) return InteractionResult.TRY_WITH_EMPTY_HAND
+
 		val inList = Config.inList(itemStack)
-		val itemName = itemStack.getItem().getName()
+		val itemName = itemStack.getStyledHoverName()
 		if ((Config.allow() && !inList) || (!Config.allow() && inList)) {
-			player.sendMessage(Text.translatable("block.${Constants.MOD_ID}.synthesizer.deny", itemName).formatted(Formatting.RED), true)
-			return ActionResult.SUCCESS
+			player.displayClientMessage(Component.translatable("block.${Constants.MOD_ID}.synthesizer.deny", itemName).withStyle(ChatFormatting.RED), true)
+			return InteractionResult.SUCCESS
 		}
 
-		if (itemStack.isEmpty()) {
-			player.sendMessage(Text.translatable("block.${Constants.MOD_ID}.synthesizer.stop").formatted(Formatting.GREEN), true)
-		} else {
-			player.sendMessage(Text.translatable("block.${Constants.MOD_ID}.synthesizer.accept", itemName).formatted(Formatting.GREEN), true)
-		}
+		player.displayClientMessage(Component.translatable("block.${Constants.MOD_ID}.synthesizer.accept", itemName).withStyle(ChatFormatting.GREEN), true)
 
-		val synthesizer = world.getBlockEntity(pos) as SynthesizerBlockEntity
-		synthesizer.setItemStack(itemStack.copy())
-		world.updateListeners(pos, state, state, Block.NOTIFY_LISTENERS)
-
-		return ActionResult.SUCCESS
+		setSynthesizedItem(level, pos, itemStack, player)
+		return InteractionResult.SUCCESS
 	}
 
-	override fun getRenderType(state: BlockState): BlockRenderType = BlockRenderType.MODEL
+	override fun useWithoutItem(blockState: BlockState, level: Level, pos: BlockPos, player: Player, hit: BlockHitResult): InteractionResult {
+		if (level.isClientSide()) return InteractionResult.PASS
+		val synthesizerBlockEntity = level.getBlockEntity(pos)
+		if (synthesizerBlockEntity !is SynthesizerBlockEntity) return InteractionResult.PASS
 
-	override fun <T: BlockEntity> getTicker(world: World, state: BlockState, type: BlockEntityType<T>): BlockEntityTicker<T>? {
-		return if (!world.isClient) BlockWithEntity.checkType(type, BlockEntities.SYNTHESIZER, SynthesizerBlockEntity::tick) else null
+		synthesizerBlockEntity.popOutTheItem()
+
+		player.displayClientMessage(Component.translatable("block.${Constants.MOD_ID}.synthesizer.stop").withStyle(ChatFormatting.GREEN), true)
+
+		setSynthesizedItem(level, pos, ItemStack.EMPTY, player)
+		return InteractionResult.SUCCESS
 	}
 
-	override fun appendProperties(builder: StateManager.Builder<Block, BlockState>) {
+	override fun <T: BlockEntity> getTicker(level: Level, state: BlockState, type: BlockEntityType<T>): BlockEntityTicker<T>? {
+		val synthesizerEnabled: Boolean = state.getValue(ENABLED)
+		if (!synthesizerEnabled) return null
+
+		val clientTick = { _: Level, _: BlockPos, _: BlockState, synthesizerBlockEntity: SynthesizerBlockEntity -> SynthesizerBlockEntity.clientTick(synthesizerBlockEntity) }
+		if (level.isClientSide()) return createTickerHelper(type, BlockEntities.SYNTHESIZER, clientTick)
+		return createTickerHelper(type, BlockEntities.SYNTHESIZER, SynthesizerBlockEntity::tick)
+	}
+
+	// Check to see if powered when placed
+	override fun getStateForPlacement(blockPlaceContext: BlockPlaceContext): BlockState = defaultBlockState().setValue(ENABLED, !blockPlaceContext.getLevel().hasNeighborSignal(blockPlaceContext.getClickedPos()))
+
+	override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block, BlockState>) {
 		builder.add(ENABLED, TIER)
 	}
 
-	override fun neighborUpdate(state: BlockState, world: World, pos: BlockPos, block: Block, fromPos: BlockPos, notify: Boolean) {
-		if (world.isClient) return
+	override fun neighborChanged(state: BlockState, level: Level, pos: BlockPos, block: Block, orientation: Orientation?, bl: Boolean) {
+		if (level.isClientSide()) return
 
-		val enabled = state.get(ENABLED)
-		val shouldEnable = !world.isReceivingRedstonePower(pos)
-		if (enabled != shouldEnable) {
-			world.setBlockState(pos, state.with(ENABLED, shouldEnable))
-		}
+		val enabled: Boolean = state.getValue(ENABLED)
+		val shouldEnable = !level.hasNeighborSignal(pos)
+		if (enabled == shouldEnable) return
+		val updateFlags = Block.UPDATE_NEIGHBORS or Block.UPDATE_CLIENTS
+		level.setBlock(pos, state.setValue(ENABLED, shouldEnable), updateFlags)
 	}
 
-	override fun appendTooltip(itemStack: ItemStack, world: BlockView?, tooltip: MutableList<Text>, context: TooltipContext) {
-		tooltip.add(Text.translatable("block.${Constants.MOD_ID}.synthesizer.tooltip_1").formatted(Formatting.DARK_PURPLE))
-		tooltip.add(Text.translatable("block.${Constants.MOD_ID}.synthesizer.tooltip_2").formatted(Formatting.DARK_PURPLE))
-		tooltip.add(Text.translatable("block.${Constants.MOD_ID}.synthesizer.tooltip_3").formatted(Formatting.DARK_PURPLE))
-	}
+	override fun animateTick(state: BlockState, level: Level, pos: BlockPos, random: RandomSource) {
+		super.animateTick(state, level, pos, random)
 
-	override fun randomDisplayTick(state: BlockState, world: World, pos: BlockPos, random: RandomGenerator) {
-		super.randomDisplayTick(state, world, pos, random)
+		val synthesizer = level.getBlockEntity(pos)
+		if (synthesizer !is SynthesizerBlockEntity) return
+		val synthesizerEnabled: Boolean = state.getValue(ENABLED)
+		val airBelow = level.getBlockState(pos.below()).isAir()
+		val carpetAbove = level.getBlockState(pos.above()).`is`(BlockTags.WOOL_CARPETS)
+		if (synthesizer.getTheItem().isEmpty() || !airBelow || carpetAbove || !synthesizerEnabled) return
 
-		val synthesizer = world.getBlockEntity(pos) as SynthesizerBlockEntity
-		if (synthesizer.getItemStack().isOf(Items.AIR) || world.getBlockState(pos.down()).getBlock() != Blocks.AIR || !state.get(ENABLED)) return
+		val particlePos = Vec3.atBottomCenterOf(pos.above())
+		val particleVelocity = Vec3(random.nextGaussian(), random.nextGaussian() + 1, random.nextGaussian())
 
-		val x = pos.getX().toDouble() + 0.5
-		val y = pos.getY().toDouble() + 1
-		val z = pos.getZ().toDouble() + 0.5
-		val velocityX = random.nextGaussian()
-		val velocityY = random.nextGaussian() + 1
-		val velocityZ = random.nextGaussian()
-
-		world.addParticle(ParticleTypes.PORTAL, x, y, z, velocityX, velocityY, velocityZ)
+		level.addParticle(ParticleTypes.PORTAL, particlePos.x(), particlePos.y(), particlePos.z(), particleVelocity.x(), particleVelocity.y(), particleVelocity.z())
 	}
 }

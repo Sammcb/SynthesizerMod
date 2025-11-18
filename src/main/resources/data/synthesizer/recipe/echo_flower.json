@@ -1,0 +1,12 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern": [" E ", "EFE", " E "],
+	"key": {
+		"E": "minecraft:echo_shard",
+		"F": "minecraft:chorus_flower"
+	},
+	"result": {
+		"id": "${id}:echo_flower"
+	}
+}

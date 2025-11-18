@@ -1,0 +1,14 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern": ["AEA", "ESE", "ACA"],
+	"key": {
+		"S": "${id}:echo_star",
+		"E": "${id}:echo_ingot",
+		"C": "${id}:echo_flower",
+		"A": "minecraft:amethyst_shard"
+	},
+	"result": {
+		"id": "${id}:synthesizer"
+	}
+}

@@ -1,0 +1,9 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"category": "misc",
+	"ingredients": ["${id}:echo_block"],
+	"result": {
+		"id": "${id}:echo_ingot",
+		"count": 9
+	}
+}

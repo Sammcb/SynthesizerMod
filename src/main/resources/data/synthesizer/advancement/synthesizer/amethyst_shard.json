@@ -1,0 +1,19 @@
+{
+	"parent": "${id}:synthesizer/root",
+	"display": {
+		"icon": { "id": "minecraft:amethyst_shard" },
+		"title": { "translate": "advancements.synthesizer.amethyst_shard.title" },
+		"description": {
+			"translate": "advancements.synthesizer.amethyst_shard.description"
+		}
+	},
+	"criteria": {
+		"has_amethyst_shard": {
+			"trigger": "minecraft:inventory_changed",
+			"conditions": {
+				"items": [{ "items": "minecraft:amethyst_shard" }]
+			}
+		}
+	},
+	"requirements": [["has_amethyst_shard"]]
+}

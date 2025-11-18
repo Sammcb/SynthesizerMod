@@ -1,0 +1,40 @@
+name: Release
+on:
+  release:
+    types: [created]
+permissions: {}
+concurrency:
+  group: release-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+    permissions:
+      security-events: write
+  release:
+    runs-on: ubuntu-24.04-arm
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    needs: ci
+    steps:
+    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      with:
+        persist-credentials: false
+    - uses: ./.github/actions/setup-nix
+    - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+      with:
+        merge-multiple: true
+        path: artifacts
+    - name: Sign checksums
+      working-directory: artifacts
+      run: nix develop .#sign -c cosign sign-blob -y checksums.txt --bundle checksums.txt.cosign.bundle
+    - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+      with:
+        subject-checksums: artifacts/checksums.txt
+    - name: Attach artifacts to release ${{ github.event.release.tag_name }}
+      run: nix develop .#releaseArtifacts -c gh release upload "${TAG_NAME}" artifacts/*
+      env:
+        GH_TOKEN: ${{ github.token }}
+        TAG_NAME: ${{ github.event.release.tag_name }}

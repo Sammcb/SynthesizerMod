@@ -1,0 +1,12 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern": ["S S", " E ", " E "],
+	"key": {
+		"E": "${id}:echo_ingot",
+		"S": "minecraft:echo_shard"
+	},
+	"result": {
+		"id": "${id}:tuner"
+	}
+}

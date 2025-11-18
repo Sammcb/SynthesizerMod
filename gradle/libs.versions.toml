@@ -1,27 +1,24 @@
 [versions]
-# Check https://lambdaurora.dev/tools/import_quilt.html https://maven.quiltmc.org https://kotlinlang.org/docs/releases.html#release-details
-kotlin = "1.8.10"
+# Latest version: https://github.com/FabricMC/fabric-example-mod/blob/1.21/build.gradle
+java = "21"
 
-minecraft = "1.19.4"
-quilt_mappings = "1.19.4+build.5"
-quilt_loader = "0.18.5"
+# Latest version: https://github.com/JetBrains/kotlin/releases
+kotlin = "2.2.21"
 
-quilted_fabric_api = "6.0.0-beta.2+0.76.0-1.19.4"
-quilt_lang_kotlin = "1.1.1+kt.1.8.10+flk.1.9.2"
+# Latest versions: https://fabricmc.net/develop/
+minecraft = "1.21.10"
+fabric_loader = "0.17.3"
+fabric_loom = "1.13-SNAPSHOT"
+fabric_api = "0.138.3+1.21.10"
 
-quilt_loom = "1.1.13"
-
-qsl = "5.0.0-beta.1+1.19.4"
+# Latest version: https://github.com/FabricMC/fabric-language-kotlin/releases
+fabric_lang_kotlin = "1.13.7+kotlin.2.2.21"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
-quilt_mappings = { module = "org.quiltmc:quilt-mappings", version.ref = "quilt_mappings" }
-quilt_loader = { module = "org.quiltmc:quilt-loader", version.ref = "quilt_loader" }
-
-quilted_fabric_api = { module = "org.quiltmc.quilted-fabric-api:quilted-fabric-api", version.ref = "quilted_fabric_api" }
-quilt_lang_kotlin = { module = "org.quiltmc.quilt-kotlin-libraries:quilt-kotlin-libraries", version.ref = "quilt_lang_kotlin" }
-
-qsl = { module = "org.quiltmc:qsl", version.ref = "qsl" }
+fabric_loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric_loader" }
+fabric_api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric_api" }
+fabric_lang_kotlin = { module = "net.fabricmc:fabric-language-kotlin", version.ref = "fabric_lang_kotlin" }
 
 [plugins]
-quilt_loom = { id = "org.quiltmc.loom", version.ref = "quilt_loom" }
+fabric_loom = { id = "fabric-loom", version.ref = "fabric_loom" }
