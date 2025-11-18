@@ -2,7 +2,6 @@ package com.sammcb.synthesizer.config
 
 import com.sammcb.synthesizer.Constants
 import com.sammcb.synthesizer.block.enums.Tier
-import com.sammcb.synthesizer.Log.LOGGER
 import java.io.File
 import kotlin.math.max
 import kotlinx.serialization.*
@@ -52,11 +51,7 @@ object Config {
 		configData = Json.decodeFromString<ConfigData>(jsonString)
 	}
 
-	fun validateFileExists() {
-		val configFile = FabricLoader.getInstance().getConfigDir().resolve(CONFIG_FILE_NAME).toFile()
-		if (configFile.exists()) return
-		LOGGER.warning("Config file ${CONFIG_FILE_NAME} does not exist!")
-	}
+	fun init() {}
 
 	fun allow() = configData?.allow ?: false
 	fun delay() = max(configData?.delay ?: 20, MIN_DELAY)
