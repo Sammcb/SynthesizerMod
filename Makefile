@@ -1,5 +1,5 @@
 .PHONY: build clean lint generateSources client server
-.DEFAULT_GOAL: build
+.DEFAULT_GOAL := build
 
 generateSources:
 	rm -rf mcSrc.nosync
