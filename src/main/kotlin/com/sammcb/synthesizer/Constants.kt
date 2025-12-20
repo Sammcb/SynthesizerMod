@@ -1,9 +1,9 @@
 package com.sammcb.synthesizer
 
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 
 object Constants {
 	const val MOD_ID = "synthesizer"
 
-	fun id(path: String) = ResourceLocation.fromNamespaceAndPath(MOD_ID, path)
+	fun id(path: String) = Identifier.fromNamespaceAndPath(MOD_ID, path)
 }

@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer
 import net.minecraft.client.renderer.item.ItemModelResolver
 import net.minecraft.client.renderer.state.CameraRenderState
 import net.minecraft.tags.BlockTags
+import net.minecraft.util.Ease
 import net.minecraft.util.Mth
 import net.minecraft.util.RandomSource
 import net.minecraft.world.item.ItemDisplayContext
@@ -57,7 +58,7 @@ class SynthesizerRenderer(context: BlockEntityRendererProvider.Context): BlockEn
 		val displayItem = synthesizerRenderState.displayItem
 		if (displayItem == null) return
 		poseStack.pushPose()
-		val offset = Mth.easeInOutSine(Mth.abs(synthesizerRenderState.spin) / 180) / 8
+		val offset = Ease.inOutSine(Mth.abs(synthesizerRenderState.spin) / 180) / 8
 		poseStack.translate(0.5, 1.25 + offset, 0.5)
 		poseStack.mulPose(Axis.YP.rotationDegrees(synthesizerRenderState.spin))
 		ItemEntityRenderer.renderMultipleFromCount(poseStack, submitNodeCollector, synthesizerRenderState.lightColor, displayItem, random)

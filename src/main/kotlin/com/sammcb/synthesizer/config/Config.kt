@@ -7,7 +7,7 @@ import kotlin.math.max
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import net.minecraft.core.registries.Registries
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import net.minecraft.tags.TagKey
 import net.minecraft.world.item.ItemStack
 import net.fabricmc.loader.api.FabricLoader
@@ -60,7 +60,7 @@ object Config {
 		val tagPrefix = "#"
 		val tags = configData?.items?.filter { it.startsWith(tagPrefix) } ?: listOf<String>()
 		for (tag in tags) {
-			val tagId = ResourceLocation.withDefaultNamespace(tag.removePrefix(tagPrefix))
+			val tagId = Identifier.withDefaultNamespace(tag.removePrefix(tagPrefix))
 			val tagKey = TagKey.create(Registries.ITEM, tagId)
 			if (itemStack.`is`(tagKey)) return true
 		}
